@@ -5,7 +5,7 @@ source("wordsByFreq.R")
 
 # Import list of words from text file
 # Use unlist to convert to atomic vector for convenient string manipulation
-wordList = unlist(read.csv('~/JoeyFails/Wordle/words.txt',FALSE),use.names = FALSE)
+wordList = unlist(read.csv('~/words.txt',FALSE),use.names = FALSE)
 
 # Print suggested guesses based on total letter frequency
 print("Suggested guesses:")
