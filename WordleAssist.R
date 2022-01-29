@@ -5,11 +5,16 @@ source("wordsByFreq.R")
 
 # Import list of words from text file
 # Use unlist to convert to atomic vector for convenient string manipulation
-wordList = unlist(read.csv('~/words.txt',FALSE),use.names = FALSE)
+wordList = unlist(read.csv('~/JoeyFails/Wordle/words.txt',FALSE),use.names = FALSE)
 
 # Print suggested guesses based on total letter frequency
 print("Suggested guesses:")
-wordsByFreq(wordList[!str_detect(wordList, "(.).*\\1")], FALSE)[1:10]
+# start with words that have the highest letter frequency without regard
+# to letter position, though I'm not yet certain this is the best strategy
+# the regular expression "(.).*\\1" finds any words with repeated letters
+# because we want informationa bout as many different letters as possible
+# at least for our initial guess
+wordsByFreq(wordList[!str_detect(wordList, "(.).*\\1")], byLetterPos = FALSE)[1:10]
 # Get the first guess from the user
 print("Enter your first word guess. Enter q to quit")
 input = str_trim(str_to_lower(as.character(readline())))
@@ -32,7 +37,7 @@ while (input != "q") {
     include = '^.....'
     for(i in 1:5){
       if (str_sub(colorCode,i,i)=='g'){
-        str_sub(include,i,i) = str_sub(guess,i,i)
+        str_sub(include,i+1,i+1) = str_sub(guess,i,i)
       }
     }
     
@@ -72,10 +77,14 @@ while (input != "q") {
         str_sub(template,i+1,i+1) = str_sub(guess,i,i)
         include = str_c(include, template, sep = '')
         # Include only words that have the letter at location i in guess
+        # somewhere in the word
+        # this is done at each iteration of the loop to ensure that the
+        # wordList includes only words that have every yellow letter
+        # 
         wordList = wordList[str_detect(wordList, str_sub(guess,i,i))]
       }
     }
-    # remove the last '|' from the regular expression stored in exclude
+    # remove the last '|' from the regular expression stored in include
     include = str_sub(include,1,-2)
     
     # Filter out all words that have yellow letters in the same position
@@ -86,11 +95,12 @@ while (input != "q") {
   # Suggest some guesses based on letter frequency in the remaining words
   # If there are few words remaining in x_char, go for green by ranking
   # according to letter frequency by letter position
-  # I chose 100 as few enough, but some further analysis might find 
+  # I chose 50 as few enough, but some further analysis might find 
   # something better
   byLetterPos = ifelse(length(wordList)<50, TRUE, FALSE) 
   print("Good guesses among remaining words:")
-  print(wordsByFreq(wordList,byLetterPos))
+  test1 = wordsByFreq(wordList,byLetterPos)
+  print(test1)
   print(str_c(as.character(length(wordList)),"possible matches",sep = " "))
   print("Enter your next guess or q to quit")
   input = str_trim(str_to_lower(as.character(readline())))
