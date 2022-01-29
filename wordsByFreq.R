@@ -29,7 +29,7 @@ scoreWords = function(v_word, letterPosFreq, byLetterPos = FALSE){
     for(p in 1:5){
       # Use row names to index the letter row corresponding to the
       # letters at each position in the word, pull the frequency from 
-      # the letter frequency matrix at the column identidied by freqCol
+      # the letter frequency matrix at the column identified by freqCol
       scores[w] = scores[w] + letterFreq[str_sub(v_word[w],p,p),freqCol[p]]
     }
   }
@@ -69,6 +69,8 @@ wordsByFreq = function(x_char, byLetterPos = FALSE){
   }
   
   # Remove words with repeated letters if byLetterPos == FALSE
+  # suggesting words without repeated letters in the early game 
+  # increases the amount of information we can gain from guesses
   if (byLetterPos == FALSE){
     x_char = x_char[!str_detect(x_char, "(.).*\\1")]
   }
