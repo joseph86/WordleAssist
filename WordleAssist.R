@@ -5,7 +5,7 @@ source("wordsByFreq.R")
 
 # Import list of words from text file
 # Use unlist to convert to atomic vector for convenient string manipulation
-wordList = unlist(read.csv('~/JoeyFails/Wordle/words.txt',FALSE),use.names = FALSE)
+wordList = unlist(read.csv('~/JoeyFails/WordleAssist/words.txt',FALSE),use.names = FALSE)
 
 # Print suggested guesses based on total letter frequency
 print("Suggested guesses:")
@@ -14,7 +14,8 @@ print("Suggested guesses:")
 # the regular expression "(.).*\\1" finds any words with repeated letters
 # because we want informationa bout as many different letters as possible
 # at least for our initial guess
-wordsByFreq(wordList[!str_detect(wordList, "(.).*\\1")], byLetterPos = FALSE)[1:10]
+print(wordsByFreq(wordList[!str_detect(wordList, "(.).*\\1")], 
+                  byLetterPos = FALSE)[1:10])
 # Get the first guess from the user
 print("Enter your first word guess. Enter q to quit")
 input = str_trim(str_to_lower(as.character(readline())))
@@ -99,8 +100,7 @@ while (input != "q") {
   # something better
   byLetterPos = ifelse(length(wordList)<50, TRUE, FALSE) 
   print("Good guesses among remaining words:")
-  test1 = wordsByFreq(wordList,byLetterPos)
-  print(test1)
+  print(wordsByFreq(wordList,byLetterPos))
   print(str_c(as.character(length(wordList)),"possible matches",sep = " "))
   print("Enter your next guess or q to quit")
   input = str_trim(str_to_lower(as.character(readline())))
